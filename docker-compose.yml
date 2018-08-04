@@ -1,0 +1,37 @@
+version: '2'
+
+services:
+
+  db:
+    image: mysql:5.6
+
+    environment:
+      - MYSQL_DATABASE=dev
+      - MYSQL_USER= admin
+      - MYSQL_PASSWORD= admin
+      - MYSQL_ROOT_PASSWORD= adminadmin
+
+    volumes:
+      - ./mysql/volumes:/var/lib/mysql
+      - ./mysql/conf:/etc/mysql/conf.d
+
+    ports:
+      - "3306:3306"
+
+  application:
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    environment:
+      RAILS_ENV: development
+
+    command: bundle exec rails s -p 3000 -b '0.0.0.0'
+
+    volumes:
+      - .:/application
+    ports:
+      - "3000:3000"
+
+    depends_on:
+      - db
