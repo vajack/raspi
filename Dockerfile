@@ -1,17 +1,37 @@
-FROM ruby:2.3.1
+FROM ruby:2.5
+
+ENV LANG C.UTF-8
+ENV WORKSPACE=/usr/local/src
+
+# install bundler.
 RUN apt-get update && \
-    apt-get install -y mysql-client nodejs --no-install-recommends && \
-    rm -rf /var/lib/apt/lists/*
+    apt-get install -y vim less && \
+    apt-get install -y build-essential libpq-dev && \
+    gem install bundler && \
+    apt-get clean && \
+    rm -r /var/lib/apt/lists/*
 
-RUN mkdir /raspi_serve
+# create user and group.
+RUN groupadd -r --gid 1000 rails && \
+    useradd -m -r --uid 1000 --gid 1000 rails
 
-WORKDIR /raspi_serve
+# create directory.
+RUN mkdir -p $WORKSPACE $BUNDLE_APP_CONFIG && \
+    chown -R rails:rails $WORKSPACE && \
+    chown -R rails:rails $BUNDLE_APP_CONFIG
 
-ADD Gemfile /raspi_serve/Gemfile
-ADD Gemfile.lock /raspi_serve/Gemfile.lock
+USER rails
+WORKDIR $WORKSPACE
 
-RUN gem install bundler
-RUN bundle install
+# bundle install.
+COPY --chown=rails:rails Gemfile $WORKSPACE/Gemfile
+RUN bundle install && \
+    bundle exec rails new . --force --database=mysql && \
+    { \
+        echo "gem 'therubyracer', platforms: :ruby"; \
+    } >> $WORKSPACE/Gemfile && \
+    bundle update
+COPY --chown=rails:rails database.yml $WORKSPACE/config/database.yml
 
-ADD . /raspi_serve
-
+EXPOSE  3000
+CMD ["rails", "server", "-b", "0.0.0.0"]
