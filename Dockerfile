@@ -31,7 +31,7 @@ RUN bundle install && \
         echo "gem 'therubyracer', platforms: :ruby"; \
     } >> $WORKSPACE/Gemfile && \
     bundle update
-COPY --chown=rails:rails database.yml $WORKSPACE/config/database.yml
+COPY --chown=rails:rails ./config/database.yml $WORKSPACE/config/database.yml
 
 EXPOSE  3000
 CMD ["rails", "server", "-b", "0.0.0.0"]

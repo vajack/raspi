@@ -3,7 +3,7 @@ version: '2'
 services:
 
   db:
-    image: mysql:5.6
+    image: hypriot/rpi-mysql
 
     environment:
       - MYSQL_DATABASE=dev
