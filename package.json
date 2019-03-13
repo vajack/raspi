@@ -1,5 +1,12 @@
 {
   "name": "raspi_serve",
   "private": true,
-  "dependencies": {}
+  "dependencies": {
+    "vue": "^2.6.8",
+    "vue-loader": "^15.7.0",
+    "vue-template-compiler": "^2.6.8"
+  },
+  "devDependencies": {
+    "webpack-dev-server": "^3.2.1"
+  }
 }
