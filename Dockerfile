@@ -29,8 +29,7 @@ RUN bundle install && \
     bundle exec rails new . --force --database=mysql && \
     { \
         echo "gem 'therubyracer', platforms: :ruby"; \
-    } >> $WORKSPACE/Gemfile && \
-    bundle update
+    } >> $WORKSPACE/Gemfile
 COPY --chown=rails:rails ./config/database.yml $WORKSPACE/config/database.yml
 
 EXPOSE  3000
